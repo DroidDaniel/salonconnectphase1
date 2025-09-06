@@ -188,14 +188,21 @@ export default function RegisterPage() {
             className="glass-input"
           />
 
-          <textarea
+          <select
             required
-            placeholder="Skills & Specializations (e.g., Hair cutting, coloring, styling, makeup, nail art...) *"
             value={formData.skills}
             onChange={(e) => setFormData({...formData, skills: e.target.value})}
-            className="textarea"
-            rows={3}
-          />
+            className="glass-input"
+            style={{color: formData.skills ? '#000000' : '#999999'}}
+          >
+            <option value="" disabled>Select Category *</option>
+            <option value="Hair dressing">Hair dressing</option>
+            <option value="Beautician">Beautician</option>
+            <option value="Body therapist">Body therapist</option>
+            <option value="Nail artist">Nail artist</option>
+            <option value="Hair colorist">Hair colorist</option>
+            <option value="Make up artist">Make up artist</option>
+          </select>
 
           <input
             type="text"
