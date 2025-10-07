@@ -59,17 +59,11 @@ export default function RegisterPage() {
       const user = userCredential.user;
 
       let profilePicBase64 = '';
-      let certificateNames: string[] = [];
+      let identityProofBase64 = '';
 
       if (profilePic) {
         profilePicBase64 = await compressImage(profilePic);
       }
-
-      if (certificates.length > 0) {
-        certificateNames = certificates.map(cert => cert.name);
-      }
-
-      let identityProofBase64 = '';
       if (identityProof) {
         identityProofBase64 = await compressImage(identityProof);
       }
