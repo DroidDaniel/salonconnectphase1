@@ -7,18 +7,20 @@ import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     phone: '',
-    location: '',
+    address: '',
     city: '',
-    skills: '',
-    experience: '',
+    state: '',
+    country: '',
+    category: '',
     password: '',
-    gender: ''
+    gender: '',
+    ownsSalon: false
   });
   const [profilePic, setProfilePic] = useState<File | null>(null);
-  const [certificates, setCertificates] = useState<File[]>([]);
+  const [identityProof, setIdentityProof] = useState<File | null>(null);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const router = useRouter();
@@ -67,17 +69,24 @@ export default function RegisterPage() {
         certificateNames = certificates.map(cert => cert.name);
       }
 
+      let identityProofBase64 = '';
+      if (identityProof) {
+        identityProofBase64 = await compressImage(identityProof);
+      }
+
       await setDoc(doc(db, 'stylists', user.uid), {
-        fullName: formData.fullName,
+        name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        location: formData.location,
+        address: formData.address,
         city: formData.city,
-        skills: formData.skills,
-        experience: formData.experience,
+        state: formData.state,
+        country: formData.country,
+        category: formData.category,
         gender: formData.gender,
+        ownsSalon: formData.ownsSalon,
         profilePicBase64,
-        certificateNames,
+        identityProofBase64,
         status: 'active',
         createdAt: new Date()
       });
@@ -104,23 +113,28 @@ export default function RegisterPage() {
         ←
       </button>
       <div style={{maxWidth: '600px', margin: '0 auto', padding: '0 20px'}}>
-        <h1 className="glass-title">Create your professional stylist account</h1>
+        <h1 className="glass-title">Account Creation</h1>
         <form onSubmit={handleSubmit} className="glass-form">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setProfilePic(e.target.files?.[0] || null)}
-            className="file-input"
-          />
-          
           <input
             type="text"
             required
-            placeholder="Full Name *"
-            value={formData.fullName}
-            onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+            placeholder="Name *"
+            value={formData.name}
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
             className="glass-input"
           />
+
+          <div style={{marginBottom: '20px'}}>
+            <label style={{display: 'flex', alignItems: 'center', color: '#FFFFFF', cursor: 'pointer'}}>
+              <input
+                type="checkbox"
+                checked={formData.ownsSalon}
+                onChange={(e) => setFormData({...formData, ownsSalon: e.target.checked})}
+                style={{marginRight: '8px'}}
+              />
+              I'm owning a salon
+            </label>
+          </div>
 
           <div style={{marginBottom: '20px'}}>
             <label style={{color: 'rgba(255, 255, 255, 0.9)', fontSize: '16px', marginBottom: '10px', display: 'block'}}>Gender *</label>
@@ -153,15 +167,6 @@ export default function RegisterPage() {
           </div>
 
           <input
-            type="email"
-            required
-            placeholder="Email Address *"
-            value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
-            className="glass-input"
-          />
-
-          <input
             type="tel"
             required
             placeholder="Phone Number *"
@@ -171,31 +176,88 @@ export default function RegisterPage() {
           />
 
           <input
-            type="text"
+            type="email"
             required
-            placeholder="Location (Street, Area) *"
-            value={formData.location}
-            onChange={(e) => setFormData({...formData, location: e.target.value})}
+            placeholder="Email ID *"
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
             className="glass-input"
           />
 
           <input
             type="text"
             required
-            placeholder="City, State *"
+            placeholder="Current Residence Address *"
+            value={formData.address}
+            onChange={(e) => setFormData({...formData, address: e.target.value})}
+            className="glass-input"
+          />
+
+          <div style={{marginBottom: '20px'}}>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProfilePic(e.target.files?.[0] || null)}
+              className="file-input"
+              id="profile-pic"
+              style={{display: 'none'}}
+            />
+            <label htmlFor="profile-pic" className="glass-button" style={{cursor: 'pointer', display: 'inline-block', textAlign: 'center', marginBottom: '0'}}>
+              Upload Profile Photo
+            </label>
+            {profilePic && <div style={{color: '#FFD700', fontSize: '14px', marginTop: '5px'}}>{profilePic.name}</div>}
+          </div>
+
+          <div style={{marginBottom: '20px'}}>
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => setIdentityProof(e.target.files?.[0] || null)}
+              className="file-input"
+              id="identity-proof"
+              style={{display: 'none'}}
+            />
+            <label htmlFor="identity-proof" className="glass-button" style={{cursor: 'pointer', display: 'inline-block', textAlign: 'center', marginBottom: '0'}}>
+              Upload Identity Proof
+            </label>
+            {identityProof && <div style={{color: '#FFD700', fontSize: '14px', marginTop: '5px'}}>{identityProof.name}</div>}
+          </div>
+
+          <input
+            type="text"
+            required
+            placeholder="City *"
             value={formData.city}
             onChange={(e) => setFormData({...formData, city: e.target.value})}
             className="glass-input"
           />
 
+          <input
+            type="text"
+            required
+            placeholder="State *"
+            value={formData.state}
+            onChange={(e) => setFormData({...formData, state: e.target.value})}
+            className="glass-input"
+          />
+
+          <input
+            type="text"
+            required
+            placeholder="Country *"
+            value={formData.country}
+            onChange={(e) => setFormData({...formData, country: e.target.value})}
+            className="glass-input"
+          />
+
           <select
             required
-            value={formData.skills}
-            onChange={(e) => setFormData({...formData, skills: e.target.value})}
+            value={formData.category}
+            onChange={(e) => setFormData({...formData, category: e.target.value})}
             className="glass-input"
-            style={{color: formData.skills ? '#000000' : '#999999'}}
+            style={{color: formData.category ? '#FFFFFF' : '#999999'}}
           >
-            <option value="" disabled>Select Category *</option>
+            <option value="" disabled>Category *</option>
             <option value="Hair dressing">Hair dressing</option>
             <option value="Beautician">Beautician</option>
             <option value="Body therapist">Body therapist</option>
@@ -203,23 +265,6 @@ export default function RegisterPage() {
             <option value="Hair colorist">Hair colorist</option>
             <option value="Make up artist">Make up artist</option>
           </select>
-
-          <input
-            type="text"
-            required
-            placeholder="Years of Experience (e.g., 5 years) *"
-            value={formData.experience}
-            onChange={(e) => setFormData({...formData, experience: e.target.value})}
-            className="glass-input"
-          />
-
-          <input
-            type="file"
-            multiple
-            accept=".pdf,.jpg,.jpeg,.png"
-            onChange={(e) => setCertificates(Array.from(e.target.files || []))}
-            className="file-input"
-          />
 
           <input
             type="password"
