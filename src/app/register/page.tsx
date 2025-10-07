@@ -119,21 +119,21 @@ export default function RegisterPage() {
           />
 
           <div style={{marginBottom: '20px'}}>
-            <label style={{display: 'flex', alignItems: 'center', color: '#FFFFFF', cursor: 'pointer'}}>
+            <label className="custom-checkbox">
               <input
                 type="checkbox"
                 checked={formData.ownsSalon}
                 onChange={(e) => setFormData({...formData, ownsSalon: e.target.checked})}
-                style={{marginRight: '8px'}}
               />
-              I'm owning a salon
+              <span className="checkmark"></span>
+              <span style={{color: '#FFFFFF'}}>I'm owning a salon</span>
             </label>
           </div>
 
           <div style={{marginBottom: '20px'}}>
-            <label style={{color: 'rgba(255, 255, 255, 0.9)', fontSize: '16px', marginBottom: '10px', display: 'block'}}>Gender *</label>
-            <div style={{display: 'flex', gap: '20px'}}>
-              <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer'}}>
+            <label className="gender-label">Gender *</label>
+            <div className="gender-group">
+              <label className="custom-radio">
                 <input
                   type="radio"
                   name="gender"
@@ -141,11 +141,11 @@ export default function RegisterPage() {
                   checked={formData.gender === 'male'}
                   onChange={(e) => setFormData({...formData, gender: e.target.value})}
                   required
-                  style={{accentColor: 'rgba(255, 255, 255, 0.8)'}}
                 />
-                Male
+                <span className="radiomark"></span>
+                <span style={{color: '#FFFFFF'}}>Male</span>
               </label>
-              <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer'}}>
+              <label className="custom-radio">
                 <input
                   type="radio"
                   name="gender"
@@ -153,9 +153,9 @@ export default function RegisterPage() {
                   checked={formData.gender === 'female'}
                   onChange={(e) => setFormData({...formData, gender: e.target.value})}
                   required
-                  style={{accentColor: 'rgba(255, 255, 255, 0.8)'}}
                 />
-                Female
+                <span className="radiomark"></span>
+                <span style={{color: '#FFFFFF'}}>Female</span>
               </label>
             </div>
           </div>
