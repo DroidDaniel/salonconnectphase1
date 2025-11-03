@@ -127,7 +127,7 @@ export default function ProfilePage() {
             backgroundPosition: 'center',
             borderRadius: '20px 20px 0 0',
             filter: 'blur(8px) brightness(0.3)',
-            zIndex: 0
+            zIndex: -1
           }} />
         )}
         
