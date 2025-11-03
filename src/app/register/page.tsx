@@ -54,6 +54,13 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
+    
+    if (!auth || !db) {
+      setMessage('Firebase not configured. Please check your setup.');
+      setIsError(true);
+      return;
+    }
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = userCredential.user;

@@ -87,6 +87,13 @@ export default function ProfilePage() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
+    
+    if (!auth || !db) {
+      setMessage('Firebase not configured. Please check your setup.');
+      setIsError(true);
+      return;
+    }
+    
     try {
       if (user) {
         await updateDoc(doc(db, 'stylists', user.uid), formData as any);
@@ -222,8 +229,8 @@ export default function ProfilePage() {
                     fontSize: '14px',
                     borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                  onMouseEnter={(e) => (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.1)'}
+                  onMouseLeave={(e) => (e.target as HTMLButtonElement).style.background = 'transparent'}
                 >
                   {isEditing ? '✕ Cancel Edit' : '✏️ Edit Profile'}
                 </button>
@@ -243,8 +250,8 @@ export default function ProfilePage() {
                     fontSize: '14px',
                     borderRadius: '0 0 10px 10px'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = 'rgba(239, 68, 68, 0.2)'}
-                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                  onMouseEnter={(e) => (e.target as HTMLButtonElement).style.background = 'rgba(239, 68, 68, 0.2)'}
+                  onMouseLeave={(e) => (e.target as HTMLButtonElement).style.background = 'transparent'}
                 >
                   🚪 Logout
                 </button>
