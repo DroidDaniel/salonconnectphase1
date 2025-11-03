@@ -7,16 +7,22 @@ import { useRouter } from 'next/navigation';
 
 interface Stylist {
   id: string;
-  fullName: string;
+  fullName?: string;
+  name?: string;
   email: string;
   phone: string;
-  location: string;
+  location?: string;
+  address?: string;
   city: string;
-  skills: string;
-  experience: string;
+  state?: string;
+  country?: string;
+  skills?: string;
+  category?: string;
+  experience?: string;
   status: string;
   gender?: string;
   profilePicBase64?: string;
+  ownsSalon?: boolean;
 }
 
 export default function DashboardPage() {
@@ -116,9 +122,9 @@ export default function DashboardPage() {
         s.gender || 'N/A',
         s.email,
         s.phone,
-        `${s.location}, ${s.city}`,
-        s.skills,
-        s.experience,
+        `${s.location || s.address || 'N/A'}, ${s.city}`,
+        s.skills || s.category || 'N/A',
+        s.experience || 'N/A',
         s.status
       ])
     ].map(row => row.join(',')).join('\n');
@@ -158,9 +164,11 @@ export default function DashboardPage() {
   });
   const activeStylists = realStylists.filter(s => s.status === 'active');
   const skillsCount = realStylists.reduce((acc, stylist) => {
-    const skills = stylist.skills.split(',').map(s => s.trim());
+    const skills = stylist.skills ? stylist.skills.split(',').map(s => s.trim()) : [stylist.category || 'Unknown'];
     skills.forEach(skill => {
-      acc[skill] = (acc[skill] || 0) + 1;
+      if (skill) {
+        acc[skill] = (acc[skill] || 0) + 1;
+      }
     });
     return acc;
   }, {} as Record<string, number>);
@@ -379,13 +387,13 @@ export default function DashboardPage() {
               <tbody>
                 {filteredStylists.map((stylist, index) => (
                   <tr key={index} onClick={() => setSelectedStylist(stylist)} style={{cursor: 'pointer'}}>
-                    <td style={{color: 'white', fontWeight: '500'}}>{capitalizeName(stylist.fullName)}</td>
+                    <td style={{color: 'white', fontWeight: '500'}}>{capitalizeName(stylist.fullName || stylist.name || 'N/A')}</td>
                     <td style={{textTransform: 'capitalize'}}>{stylist.gender || 'N/A'}</td>
                     <td>{stylist.email}</td>
                     <td>{stylist.phone}</td>
                     <td>{stylist.city}</td>
-                    <td style={{maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'}}>{stylist.skills}</td>
-                    <td>{stylist.experience}</td>
+                    <td style={{maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'}}>{stylist.skills || stylist.category || 'N/A'}</td>
+                    <td>{stylist.experience || 'N/A'}</td>
                     <td>
                       <span className="status-badge" style={{
                         backgroundColor: stylist.status === 'active' ? 'rgba(34, 197, 94, 0.3)' : 
@@ -557,13 +565,14 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div style={{display: 'grid', gap: '15px', marginBottom: '30px'}}>
-                  <div><strong style={{color: 'white'}}>Name:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{capitalizeName(selectedStylist.fullName)}</span></div>
+                  <div><strong style={{color: 'white'}}>Name:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{capitalizeName(selectedStylist.fullName || selectedStylist.name || 'N/A')}</span></div>
                   <div><strong style={{color: 'white'}}>Gender:</strong> <span style={{color: 'rgba(255,255,255,0.8)', textTransform: 'capitalize'}}>{selectedStylist.gender || 'N/A'}</span></div>
                   <div><strong style={{color: 'white'}}>Email:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.email}</span></div>
                   <div><strong style={{color: 'white'}}>Phone:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.phone}</span></div>
-                  <div><strong style={{color: 'white'}}>Location:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.location}, {selectedStylist.city}</span></div>
-                  <div><strong style={{color: 'white'}}>Skills:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.skills}</span></div>
-                  <div><strong style={{color: 'white'}}>Experience:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.experience}</span></div>
+                  <div><strong style={{color: 'white'}}>Location:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.location || selectedStylist.address || 'N/A'}, {selectedStylist.city}</span></div>
+                  <div><strong style={{color: 'white'}}>Category:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.skills || selectedStylist.category || 'N/A'}</span></div>
+                  <div><strong style={{color: 'white'}}>Experience:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>{selectedStylist.experience || 'N/A'}</span></div>
+                  {selectedStylist.ownsSalon && <div><strong style={{color: 'white'}}>Salon Owner:</strong> <span style={{color: 'rgba(255,255,255,0.8)'}}>Yes</span></div>}
                   <div><strong style={{color: 'white'}}>Status:</strong> 
                     <span className="status-badge" style={{
                       marginLeft: '10px',
