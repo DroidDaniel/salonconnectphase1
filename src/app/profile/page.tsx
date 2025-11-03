@@ -192,12 +192,12 @@ export default function ProfilePage() {
                 )}
               </div>
               
-              <div style={{
+              {/* <div style={{
                 color: '#FFFFFF',
                 fontSize: '18px',
                 transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
                 transition: 'transform 0.3s ease'
-              }}>▼</div>
+              }}>▼</div> */}
             </div>
             
             {showDropdown && (
